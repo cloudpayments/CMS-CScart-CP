@@ -4,6 +4,8 @@
 
 ### Возможности:  
 • Одностадийная схема оплаты;  
+• Двухстадийная схема оплаты;  
+• Выбор дизайн виджета;  
 • Поддержка онлайн-касс (ФЗ-54);  
 • Отправка чеков по email;  
 • Отправка чеков по SMS;  
@@ -22,6 +24,10 @@ http://domain.ru/index.php?dispatch=payment_notification.check&payment=cloudpaym
 http://domain.ru/index.php?dispatch=payment_notification.pay&payment=cloudpayments
 * **Уведомление при отклоненном платеже* (Fail):\
 http://domain.ru/index.php?dispatch=payment_notification.fail&payment=cloudpayments
+* **Уведомление о подтверждении платежа** (Сonfirm):\
+http://domain.ru/index.php?dispatch=payment_notification.confirm&payment=cloudpayments
+* **Уведомление об отменене платежа** (Сancel):\
+http://domain.ru/index.php?dispatch=payment_notification.cancel&payment=cloudpayments
 * **Уведомление о возврате платежа* (Refund):\
 http://domain.ru/index.php?dispatch=payment_notification.refund&payment=cloudpayments
 
@@ -74,3 +80,14 @@ http://domain.ru/index.php?dispatch=payment_notification.refund&payment=cloudpay
 Также возможно назначить в данном разделе налоговую ставку для всех товаров 
 
 ![Применение НДС в CS-Cart](doc/img/cscart_nds_apply.png)
+
+#### Changelog
+
+= 1.1 =
+* добавление двухстадийной схемы оплаты;  
+* добавление выбора дизайна виджета;  
+* правка значений ставок НДС;
+
+= 1.0 =
+* Публикация модуля.
+

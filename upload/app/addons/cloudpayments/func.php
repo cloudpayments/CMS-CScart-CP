@@ -82,9 +82,9 @@ function fn_cloudpayments_get_inventory_positions($order_info) {
         foreach ($receipt->getItems() as $item) {
             $inventory_positions[] = array(
                 'label'    => $item->getName(),
-                'price'    => $item->getPrice(),
+                'price'    => floatval(number_format((float)$item->getPrice(), 2, '.', '')),
                 'quantity' => $item->getQuantity(),
-                'amount'   => $item->getTotal(),
+                'amount'   => floatval(number_format((float)$item->getTotal(), 2, '.', '')),
                 'vat'      => isset($map_taxes[$item->getTaxType()]) ? $map_taxes[$item->getTaxType()] : $map_taxes[TaxType::NONE]
             );
         }

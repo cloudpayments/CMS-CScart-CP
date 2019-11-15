@@ -20,10 +20,10 @@ if (defined('PAYMENT_NOTIFICATION')) {
         fn_cloudpayments_exit_with_response(CLOUDPAYMENTS_RESULT_ERROR_NOT_ACCEPTED, 'Invalid POST data');
     }
 
-    if (in_array($mode, array('check', 'pay')) && empty($_POST['Amount'])) {
+    if (in_array($mode, array('check', 'pay', 'confirm')) && empty($_POST['Amount'])) {
         fn_cloudpayments_exit_with_response(CLOUDPAYMENTS_RESULT_ERROR_NOT_ACCEPTED, 'Invalid POST data');
     }
-
+    $Status_pay     = $_POST['Status'];
     $order_id       = (int)$_POST['InvoiceId'];
     $payment_id     = db_get_field("SELECT payment_id FROM ?:orders WHERE order_id = ?i", $order_id);
     $processor_data = fn_get_processor_data($payment_id);
@@ -44,9 +44,22 @@ if (defined('PAYMENT_NOTIFICATION')) {
         case 'check':
             break;
         case 'pay':
+            if ($Status_pay == 'Completed') {
+                $pp_response['order_status'] = $processor_data['processor_params']['statuses']['paid'];
+                $pp_response['reason_text']  = __('approved');
+                fn_finish_payment($order_id, $pp_response);
+            };
+            if ($Status_pay == 'Authorized') {
+                $pp_response['order_status'] = $processor_data['processor_params']['statuses']['confirm'];
+                $pp_response['reason_text']  = __('cloudpayments_payment_confirm');
+                fn_finish_payment($order_id, $pp_response);
+            };
+            break;
+        case 'confirm':
             $pp_response['order_status'] = $processor_data['processor_params']['statuses']['paid'];
-            $pp_response['reason_text']  = __('approved');
-            fn_finish_payment($order_id, $pp_response);
+                $pp_response['reason_text']  = __('approved');
+                fn_update_order_payment_info($order_id, $pp_response);
+                fn_change_order_status($order_id, $pp_response['order_status']);
             break;
         case 'fail':
             $pp_response['order_status'] = $processor_data['processor_params']['statuses']['failed'];
@@ -56,6 +69,12 @@ if (defined('PAYMENT_NOTIFICATION')) {
         case 'refund':
             $pp_response['order_status'] = $processor_data['processor_params']['statuses']['refunded'];
             $pp_response['reason_text']  = __('refunded');
+            fn_update_order_payment_info($order_id, $pp_response);
+            fn_change_order_status($order_id, $pp_response['order_status']);
+            break;
+        case 'cancel':
+            $pp_response['order_status'] = $processor_data['processor_params']['statuses']['cancel'];
+            $pp_response['reason_text']  = __('cloudpayments_payment_canceled');
             fn_update_order_payment_info($order_id, $pp_response);
             fn_change_order_status($order_id, $pp_response['order_status']);
             break;
@@ -78,15 +97,17 @@ if (defined('PAYMENT_NOTIFICATION')) {
     $description    = __('cloudpayments_order_desc_prefix') . $order_id;
     $success_url    = fn_url('payment_notification.finish_success?payment=cloudpayments&order_id=' . $order_id, 'C', 'http');
     $fail_url       = fn_url('payment_notification.finish_fail?payment=cloudpayments&order_id=' . $order_id, 'C', 'http');
+    $payment_scheme = $processor_data['processor_params']['payment_scheme'];
 
     $widget_params = array(
         "publicId"    => $processor_data['processor_params']['public_id'],  //id из личного кабинета
         "description" => $description, //назначение
-        "amount"      => floatval($total), //сумма
+        "amount"      => floatval(number_format((float)$total, 2, '.', '')), //сумма
         "currency"    => $processor_data['processor_params']['currency'], //валюта
         "invoiceId"   => $order_id, //номер заказа  (необязательно)
         "accountId"   => $customer_email, //идентификатор плательщика (необязательно)
         "email"       => $customer_email,
+	    "skin"        => $processor_data['processor_params']['skin'],
         "data"        => array(
             "name"          => $customer_name,
             "phone"         => $customer_phone,
@@ -96,10 +117,12 @@ if (defined('PAYMENT_NOTIFICATION')) {
 
     if (isset($processor_data['processor_params']['receipt']) && $processor_data['processor_params']['receipt'] == 'Y') {
         $receipt_data = array(
-            'Items'          => fn_cloudpayments_get_inventory_positions($order_info),
-            'taxationSystem' => $processor_data['processor_params']['taxation_system'],
-            'email'          => $customer_email,
-            'phone'          => $customer_phone
+            'Items'            => fn_cloudpayments_get_inventory_positions($order_info),
+            'calculationPlace' => 'www.'.$_SERVER['SERVER_NAME'],
+	        'taxationSystem'   => $processor_data['processor_params']['taxation_system'],
+            'email'            => $customer_email,
+            'phone'            => $customer_phone,
+            'amounts'          => array('electronic'=> floatval(number_format((float)$order_info['total'], 2, '.', '')))
         );
 
         $widget_params['data']['cloudPayments']['customerReceipt'] = $receipt_data;
@@ -115,10 +138,10 @@ if (defined('PAYMENT_NOTIFICATION')) {
         <meta name='viewport' content='width=device-width, initial-scale=1.0'>
     </head>
     <body>
-        <script src="https://widget.cloudpayments.ru/bundles/cloudpayments"></script>
+        <script src="https://widget.cloudpayments.ru/bundles/cloudpayments?cms=CScart"></script>
         <script>
             var widget = new cp.CloudPayments({language: '{$widget_lang}'});
-            widget.charge({$widget_params}, '{$success_url}', '{$fail_url}');
+            widget.{$payment_scheme}({$widget_params}, '{$success_url}', '{$fail_url}');
         </script>
     </body>
 </html>
