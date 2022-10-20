@@ -63,6 +63,21 @@ function fn_cloudpayments_exit_with_response($code, $msg = '') {
     die();
 }
 
+function fn_cloudpayments_order_placement_routines($order_id, $force_notification, $order_info, $_error){
+  if(AREA == "C" && isset(Tygh::$app['session']['repay']) && Tygh::$app['session']['repay'] == $order_id){
+    Tygh::$app['session']['notifications'] = [];
+    if(isset($force_notification['cloudpayments'])){
+      if($force_notification['cloudpayments'] == 'finish_success'){
+        fn_set_notification('N', __('cloudpayments_order_desc_prefix').$order_id, __('text_order_repayed_successfully'));
+      } elseif($force_notification['cloudpayments'] == 'finish_fail'){
+        fn_set_notification('W', __('cloudpayments_order_desc_prefix').$order_id, __('cloudpayments_payment_failed'));
+      }
+    }
+    $redirect_url = "orders.details&order_id=".$order_id;
+    fn_redirect($redirect_url);    
+  }
+}
+
 /**
  * Gets product tax data
  *

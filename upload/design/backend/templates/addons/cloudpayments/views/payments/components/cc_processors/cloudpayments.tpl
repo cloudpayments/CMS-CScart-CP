@@ -1,18 +1,18 @@
-{assign var="check_url" value="payment_notification.check?payment=cloudpayments"|fn_url:'C':'http'}
-{assign var="pay_url" value="payment_notification.pay?payment=cloudpayments"|fn_url:'C':'http'}
-{assign var="confirm_url" value="payment_notification.confirm?payment=cloudpayments"|fn_url:'C':'http'}
-{assign var="fail_url" value="payment_notification.fail?payment=cloudpayments"|fn_url:'C':'http'}
-{assign var="refund_url" value="payment_notification.refund?payment=cloudpayments"|fn_url:'C':'http'}
-{assign var="cancel_url" value="payment_notification.cancel?payment=cloudpayments"|fn_url:'C':'http'}
+{assign var="check_url" value="payment_notification.check?payment=cloudpayments"|fn_url:'C':'current'}
+{assign var="pay_url" value="payment_notification.pay?payment=cloudpayments"|fn_url:'C':'current'}
+{assign var="fail_url" value="payment_notification.fail?payment=cloudpayments"|fn_url:'C':'current'}
+{assign var="confirm_url" value="payment_notification.confirm?payment=cloudpayments"|fn_url:'C':'current'}
+{assign var="refund_url" value="payment_notification.refund?payment=cloudpayments"|fn_url:'C':'current'}
+{assign var="cancel_url" value="payment_notification.cancel?payment=cloudpayments"|fn_url:'C':'current'}
 
 <div>
     {__("cloudpayments_notify_url_notice", [
         "[check_url]" => $check_url,
         "[pay_url]" => $pay_url,
-	    "[confirm_url]" => $confirm_url,
         "[fail_url]" => $fail_url,
+        "[confirm_url]" => $confirm_url,
         "[refund_url]" => $refund_url,
-	    "[cancel_url]" => $cancel_url
+	      "[cancel_url]" => $cancel_url
     ])}
 </div>
 <hr>

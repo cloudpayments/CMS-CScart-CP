@@ -19,17 +19,17 @@
 В личном кабинете CloudPayments в настройках сайта необходимо включить следующие уведомления:
 
 * **Запрос на проверку платежа** (Сheck):\
-http://domain.ru/index.php?dispatch=payment_notification.check&payment=cloudpayments
+https://domain.ru/index.php?dispatch=payment_notification.check&payment=cloudpayments
 * **Уведомление о принятом платеже** (Pay):\
-http://domain.ru/index.php?dispatch=payment_notification.pay&payment=cloudpayments
+https://domain.ru/index.php?dispatch=payment_notification.pay&payment=cloudpayments
 * **Уведомление при отклоненном платеже* (Fail):\
-http://domain.ru/index.php?dispatch=payment_notification.fail&payment=cloudpayments
+https://domain.ru/index.php?dispatch=payment_notification.fail&payment=cloudpayments
 * **Уведомление о подтверждении платежа** (Сonfirm):\
-http://domain.ru/index.php?dispatch=payment_notification.confirm&payment=cloudpayments
+https://domain.ru/index.php?dispatch=payment_notification.confirm&payment=cloudpayments
 * **Уведомление об отменене платежа** (Сancel):\
-http://domain.ru/index.php?dispatch=payment_notification.cancel&payment=cloudpayments
+https://domain.ru/index.php?dispatch=payment_notification.cancel&payment=cloudpayments
 * **Уведомление о возврате платежа* (Refund):\
-http://domain.ru/index.php?dispatch=payment_notification.refund&payment=cloudpayments
+https://domain.ru/index.php?dispatch=payment_notification.refund&payment=cloudpayments
 
 Где domain.ru — доменное имя вашего сайта.
 Во всех случаях требуется выбирать вариант по умолчанию: кодировка — UTF-8, HTTP-метод — POST, формат — CloudPayments
@@ -82,6 +82,13 @@ http://domain.ru/index.php?dispatch=payment_notification.refund&payment=cloudpay
 ![Применение НДС в CS-Cart](doc/img/cscart_nds_apply.png)
 
 #### Changelog
+
+= 1.2 =
+* Испарвлена проблема выставления статуса заказа, при повторной попытки оплаты
+* Исправлена проблема обработчика check уведомления, когда до оплаты был изменен состав заказа
+* Исправлена проблема редиректа при оплате по сценарию оплаты по телефону (сценарий в магазине)
+* Приведено в порядок список url для колбеков, а так же если включен протокол ssl будет url с https
+
 
 = 1.1 =
 * добавление двухстадийной схемы оплаты;  
