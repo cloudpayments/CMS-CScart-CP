@@ -33,7 +33,11 @@ if (defined('PAYMENT_NOTIFICATION')) {
     $payment_id     = db_get_field("SELECT payment_id FROM ?:orders WHERE order_id = ?i", $order_id);
     $processor_data = fn_get_processor_data($payment_id);
     if (!$processor_data) {
-        fn_cloudpayments_exit_with_response(CLOUDPAYMENTS_RESULT_ERROR_INVALID_ORDER, 'Order not found');
+        if($mode == "check"){
+          fn_cloudpayments_exit_with_response(CLOUDPAYMENTS_RESULT_ERROR_INVALID_ORDER, 'Order not found');
+        } else {
+          fn_cloudpayments_exit_with_response(CLOUDPAYMENTS_RESULT_SUCCESS, 'Order not found');
+        }
     }
 
     // Check sign
