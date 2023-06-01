@@ -92,6 +92,14 @@ msgctxt "Languages::cloudpayments_taxation_system_patent"
 msgid "Patent system of taxation"
 msgstr "Патентная система налогообложения"
 
+msgctxt "Languages::cloudpayments_spic"
+msgid "Delivery code IKPU"
+msgstr "Код ИКПУ доставки"
+
+msgctxt "Languages::cloudpayments_package_code"
+msgid "Delivery package code"
+msgstr "Код упаковки доставки"
+
 msgctxt "Languages::cloudpayments_text_status_map"
 msgid "Map of order statuses"
 msgstr "Карта статусов заказа"

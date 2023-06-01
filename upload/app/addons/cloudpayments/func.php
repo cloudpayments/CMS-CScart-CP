@@ -85,7 +85,7 @@ function fn_cloudpayments_order_placement_routines($order_id, $force_notificatio
  *
  * @return array An array of products with taxes
  */
-function fn_cloudpayments_get_inventory_positions($order_info) {
+function fn_cloudpayments_get_inventory_positions($order_info, $processor_params) {
     $map_taxes           = fn_get_schema('cloudpayments', 'map_taxes');
     $inventory_positions = array();
 
@@ -95,13 +95,28 @@ function fn_cloudpayments_get_inventory_positions($order_info) {
 
     if ($receipt) {
         foreach ($receipt->getItems() as $item) {
-            $inventory_positions[] = array(
+            $new_inventory_position = array(
                 'label'    => $item->getName(),
                 'price'    => floatval(number_format((float)$item->getPrice(), 2, '.', '')),
                 'quantity' => $item->getQuantity(),
                 'amount'   => floatval(number_format((float)$item->getTotal(), 2, '.', '')),
                 'vat'      => isset($map_taxes[$item->getTaxType()]) ? $map_taxes[$item->getTaxType()] : $map_taxes[TaxType::NONE]
             );
+
+            if ($item->getType() == "product") {
+              $product_features = fn_get_product_features(['product_id'=>$order_info['products'][$item->getId()]['product_id']]);
+              foreach ($product_features[0] as $feature):
+                if ($feature['feature_code'] == "SPIC") $new_inventory_position['spic'] = $feature['value'];
+                if ($feature['feature_code'] == "PACKAGE_CODE") $new_inventory_position['packageCode'] = $feature['value'];
+              endforeach;
+            }
+
+            if ($item->getType() == "shipping") {
+              $new_inventory_position['spic'] = $processor_params['spic'];
+              $new_inventory_position['packageCode'] = $processor_params['package_code'];
+            }
+
+            $inventory_positions[] = $new_inventory_position;
         }
     }
 

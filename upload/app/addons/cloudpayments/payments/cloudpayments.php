@@ -33,11 +33,7 @@ if (defined('PAYMENT_NOTIFICATION')) {
     $payment_id     = db_get_field("SELECT payment_id FROM ?:orders WHERE order_id = ?i", $order_id);
     $processor_data = fn_get_processor_data($payment_id);
     if (!$processor_data) {
-        if($mode == "check"){
-          fn_cloudpayments_exit_with_response(CLOUDPAYMENTS_RESULT_ERROR_INVALID_ORDER, 'Order not found');
-        } else {
-          fn_cloudpayments_exit_with_response(CLOUDPAYMENTS_RESULT_SUCCESS, 'Order not found');
-        }
+        fn_cloudpayments_exit_with_response(CLOUDPAYMENTS_RESULT_ERROR_INVALID_ORDER, 'Order not found');
     }
 
     // Check sign
@@ -154,13 +150,16 @@ if (defined('PAYMENT_NOTIFICATION')) {
 
     if (isset($processor_data['processor_params']['receipt']) && $processor_data['processor_params']['receipt'] == 'Y') {
         $receipt_data = array(
-            'Items'            => fn_cloudpayments_get_inventory_positions($order_info),
+			'Items'            => fn_cloudpayments_get_inventory_positions($order_info, $processor_data['processor_params']),
             'calculationPlace' => 'www.'.$_SERVER['SERVER_NAME'],
 	          'taxationSystem'   => $processor_data['processor_params']['taxation_system'],
             'email'            => $customer_email,
             'phone'            => $customer_phone,
             'amounts'          => array('electronic'=> floatval(number_format((float)$order_info['total'], 2, '.', '')))
         );
+
+		if (isset($receipt_data['Items'][0]['spic']) && isset($receipt_data['Items'][0]['packageCode']))
+			$receipt_data['AdditionalReceiptInfos'] = array("Вы стали обладателем права на 1% cashback");
 
         $widget_params['data']['cloudPayments']['customerReceipt'] = $receipt_data;
     }

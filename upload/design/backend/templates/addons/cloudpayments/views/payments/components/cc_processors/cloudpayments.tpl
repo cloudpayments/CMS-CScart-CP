@@ -44,6 +44,7 @@
             <option value="uk" {if $processor_params.language == "uk"}selected="selected"{/if}>Украинский (EET)</option>
             <option value="pl" {if $processor_params.language == "pl"}selected="selected"{/if}>Польский (CET)</option>
             <option value="pt" {if $processor_params.language == "pt"}selected="selected"{/if}>Португальский (CET)</option>
+            <option value="uz" {if $processor_params.language == "uz"}selected="selected"{/if}>Узбекский (UZT)</option>
         </select>
     </div>
 </div>
@@ -114,6 +115,20 @@
             <option value="4" {if $processor_params.taxation_system == "4"}selected="selected"{/if}>{__("cloudpayments_taxation_system_esn")}</option>
             <option value="5" {if $processor_params.taxation_system == "5"}selected="selected"{/if}>{__("cloudpayments_taxation_system_patent")}</option>
         </select>
+    </div>
+</div>
+
+<div class="control-group">
+    <label class="control-label" for="cloudpayments_spic">{__("cloudpayments_spic")}:</label>
+    <div class="controls">
+        <input type="text" name="payment_data[processor_params][spic]" id="cloudpayments_spic" value="{$processor_params.spic}" size="120">
+    </div>
+</div>
+
+<div class="control-group">
+    <label class="control-label" for="cloudpayments_package_code">{__("cloudpayments_package_code")}:</label>
+    <div class="controls">
+        <input type="text" name="payment_data[processor_params][package_code]" id="cloudpayments_package_code" value="{$processor_params.package_code}" size="120">
     </div>
 </div>
 
