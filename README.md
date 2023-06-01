@@ -84,7 +84,8 @@ https://domain.ru/index.php?dispatch=payment_notification.refund&payment=cloudpa
 #### Changelog
 
 = 1.3 =
-* Добавлена фискализация для Узбекистана
+* Обновлена локализация виджета
+* Поддержка онлайн-касс для Узбекистана - [подробнее](https://static.cloudpayments.ru/docs/uz/CP_CS-Cart_UZ.pdf)
 
 = 1.2 =
 * Исправлена проблема обработчика pay уведомления, при повторной попытке оплаты
